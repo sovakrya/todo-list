@@ -26,7 +26,7 @@ const saveIdCounter = () => {
 };
 
 export async function getTodos() {
-  return todos.slice();
+  return structuredClone(todos);
 }
 
 export async function addTodo({ name, completeAt = null }) {
@@ -46,6 +46,31 @@ export async function addTodo({ name, completeAt = null }) {
   return todo;
 }
 
-export async function deleteTodo() {}
+export async function deleteTodo(id) {
+  const index = todos.findIndex((todo) => {
+    return todo.id === id;
+  });
+  const [deletedTodo] = todos.splice(index, 1);
 
-export async function updateTodo() {}
+  saveTodos();
+
+  return deletedTodo;
+}
+
+export async function updateTodo(id, { isCompleted, name }) {
+  const todo = todos.find((todo) => {
+    return todo.id === id;
+  });
+
+  if (isCompleted !== undefined) {
+    todo.isCompleted = isCompleted;
+  }
+
+  if (name) {
+    todo.name = name;
+  }
+
+  saveTodos();
+
+  return todo;
+}

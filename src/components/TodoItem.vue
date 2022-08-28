@@ -18,6 +18,7 @@
         type="checkbox"
         class="todo-item-checkbox"
         :checked="todo.isCompleted"
+        @change="completeTodo($event.target.checked)"
       />
 
       <span
@@ -28,18 +29,18 @@
         {{ todo.name }}
       </span>
 
-      <input v-else class="todo-body__name" />
+      <input v-else v-model="name" class="todo-body__name" />
 
       <div>
         <button v-if="!isEdit" @click="editTodo">
           <IconPencil></IconPencil>
         </button>
 
-        <button v-else @click="saveTodo">
+        <button v-else class="todo-button-checkmark" @click="updateTodo">
           <IconCheckMark></IconCheckMark>
         </button>
 
-        <button>
+        <button @click="deleteTodo">
           <IconTrash></IconTrash>
         </button>
       </div>
@@ -52,6 +53,7 @@ import { defineComponent } from "vue";
 import IconPencil from "./IconPencil.vue";
 import IconCheckMark from "./IconCheckMark.vue";
 import IconTrash from "./IconTrash.vue";
+import { deleteTodo } from "@/service/todos";
 
 export default defineComponent({
   components: { IconPencil, IconCheckMark, IconTrash },
@@ -62,9 +64,11 @@ export default defineComponent({
       required: true,
     },
   },
+  emits: ["delete", "complete", "update:name"],
   data() {
     return {
       isEdit: false,
+      name: this.todo.name,
     };
   },
 
@@ -73,7 +77,17 @@ export default defineComponent({
       this.isEdit = true;
     },
 
-    saveTodo() {
+    deleteTodo() {
+      this.$emit("delete", deleteTodo);
+    },
+
+    completeTodo(isCompleted) {
+      this.$emit("complete", isCompleted);
+    },
+
+    updateTodo() {
+      this.$emit("update:name", this.name);
+
       this.isEdit = false;
     },
   },
@@ -117,5 +131,10 @@ export default defineComponent({
 
 .todo-item__name-completed {
   text-decoration: line-through;
+}
+
+.todo-button-checkmark {
+  background-color: rgb(190, 231, 93);
+  cursor: pointer;
 }
 </style>
