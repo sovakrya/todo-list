@@ -1,15 +1,15 @@
 <template>
   <div
     class="cool-border todo-item-box"
-    :class="{ 'todo-item-completed': todo.isCompleted }"
+    :class="{ 'todo-item-completed': todo.isComplete }"
   >
     <div class="todo-date-container">
       <div>
-        {{ new Date(todo.createdAt).toLocaleString() }}
+        {{ new Date(todo.createdAt * 1000).toLocaleString() }}
       </div>
 
-      <div v-if="todo.completeAt">
-        {{ new Date(todo.completeAt).toLocaleString() }}
+      <div v-if="todo.finishAt">
+        {{ new Date(todo.finishAt * 1000).toLocaleString() }}
       </div>
     </div>
 
@@ -17,19 +17,19 @@
       <input
         type="checkbox"
         class="todo-item-checkbox"
-        :checked="todo.isCompleted"
+        :checked="todo.isComplete"
         @change="completeTodo($event.target.checked)"
       />
 
       <span
         v-if="!isEdit"
         class="todo-body__name"
-        :class="{ 'todo-item__name-completed': todo.isCompleted }"
+        :class="{ 'todo-item__name-completed': todo.isComplete }"
       >
-        {{ todo.name }}
+        {{ todo.title }}
       </span>
 
-      <input v-else v-model="name" class="todo-body__name" />
+      <input v-else v-model="title" class="todo-body__name" />
 
       <div>
         <button v-if="!isEdit" @click="editTodo">
@@ -64,11 +64,11 @@ export default defineComponent({
       required: true,
     },
   },
-  emits: ["delete", "complete", "update:name"],
+  emits: ["delete", "complete", "update:title"],
   data() {
     return {
       isEdit: false,
-      name: this.todo.name,
+      title: this.todo.title,
     };
   },
 
@@ -81,12 +81,12 @@ export default defineComponent({
       this.$emit("delete", deleteTodo);
     },
 
-    completeTodo(isCompleted) {
-      this.$emit("complete", isCompleted);
+    completeTodo(isComplete) {
+      this.$emit("complete", isComplete);
     },
 
     updateTodo() {
-      this.$emit("update:name", this.name);
+      this.$emit("update:title", this.title);
 
       this.isEdit = false;
     },

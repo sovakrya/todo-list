@@ -1,47 +1,58 @@
-const TODOS_KEY = "todos";
-const ID_COUNTER_KEY = "idCounter";
+// const TODOS_KEY = "todos";
+// const ID_COUNTER_KEY = "idCounter";
 
-let todos = [];
+// let todos = [];
 
-const _todos = localStorage.getItem(TODOS_KEY);
+// const _todos = localStorage.getItem(TODOS_KEY);
 
-if (_todos) {
-  todos = JSON.parse(_todos);
-}
+// if (_todos) {
+//   todos = JSON.parse(_todos);
+// }
 
-let idCounter = 1;
+// let idCounter = 1;
 
-const _idCounter = localStorage.getItem(ID_COUNTER_KEY);
+// const _idCounter = localStorage.getItem(ID_COUNTER_KEY);
 
-if (_idCounter) {
-  idCounter = JSON.parse(_idCounter);
-}
+// if (_idCounter) {
+//   idCounter = JSON.parse(_idCounter);
+// }
 
-const saveTodos = () => {
-  localStorage.setItem(TODOS_KEY, JSON.stringify(todos));
-};
+// const saveTodos = () => {
+//   localStorage.setItem(TODOS_KEY, JSON.stringify(todos));
+// };
 
-const saveIdCounter = () => {
-  localStorage.setItem(ID_COUNTER_KEY, JSON.stringify(idCounter));
-};
+// const saveIdCounter = () => {
+//   localStorage.setItem(ID_COUNTER_KEY, JSON.stringify(idCounter));
+// };
 
 export async function getTodos() {
-  return structuredClone(todos);
+  const response = await fetch("/api/todo");
+
+  const result = await response.json();
+
+  return result;
+
+  // 1.
+  // return  fetch("/api/todo").then((response) => response.json())
+
+  // 2.
+  // const response = await fetch("/api/todo");
+
+  // return response.json();
 }
 
-export async function addTodo({ name, completeAt = null }) {
-  const todo = {
-    createdAt: new Date().getTime(),
-    id: idCounter++,
-    isCompleted: false,
-    name,
-    completeAt,
-  };
+export async function addTodo({ title, finishAt = null }) {
+  const response = await fetch("/api/todo", {
+    headers: {
+      "content-type": "application/json",
+    },
 
-  todos.push(todo);
+    method: "PUT",
 
-  saveTodos();
-  saveIdCounter();
+    body: JSON.stringify({ title, finishAt: Math.floor(finishAt / 1000) }),
+  });
+
+  const todo = await response.json();
 
   return todo;
 }
@@ -57,13 +68,13 @@ export async function deleteTodo(id) {
   return deletedTodo;
 }
 
-export async function updateTodo(id, { isCompleted, name }) {
+export async function updateTodo(id, { isComplete, name }) {
   const todo = todos.find((todo) => {
     return todo.id === id;
   });
 
-  if (isCompleted !== undefined) {
-    todo.isCompleted = isCompleted;
+  if (isComplete !== undefined) {
+    todo.isComplete = isComplete;
   }
 
   if (name) {

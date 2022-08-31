@@ -36,7 +36,10 @@ export default defineComponent({
     addTodo() {
       if (!this.todoText) return;
 
-      addTodo({ name: this.todoText, completeAt: this.completedAt })
+      addTodo({
+        title: this.todoText,
+        finishAt: new Date(this.completedAt).getTime(),
+      })
         .then((todo) => {
           console.log("новое туду", todo);
 

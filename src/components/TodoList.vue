@@ -6,7 +6,7 @@
       :todo="todo"
       @delete="deleteTodo(todo.id)"
       @complete="completeTodo($event, todo.id)"
-      @update:name="updateTodo($event, todo.id)"
+      @update:title="updateTodo($event, todo.id)"
     />
   </div>
 </template>
@@ -54,8 +54,8 @@ export default defineComponent({
         });
     },
 
-    completeTodo(isCompleted, id) {
-      updateTodo(id, { isCompleted })
+    completeTodo(isComplete, id) {
+      updateTodo(id, { isComplete })
         .then((todo) => {
           console.log("обновленная туду", todo);
 
@@ -66,8 +66,8 @@ export default defineComponent({
         });
     },
 
-    updateTodo(name, id) {
-      updateTodo(id, { name })
+    updateTodo(title, id) {
+      updateTodo(id, { title })
         .then((todo) => {
           console.log("обновленное имя", todo);
 
