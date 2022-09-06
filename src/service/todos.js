@@ -58,12 +58,17 @@ export async function addTodo({ title, finishAt = null }) {
 }
 
 export async function deleteTodo(id) {
-  const index = todos.findIndex((todo) => {
-    return todo.id === id;
-  });
-  const [deletedTodo] = todos.splice(index, 1);
+  const response = await fetch("/api/todo", {
+    headers: {
+      "content-type": "application/json",
+    },
 
-  saveTodos();
+    method: "DELETE",
+
+    body: JSON.stringify({ id }),
+  });
+
+  const deletedTodo = await response.json();
 
   return deletedTodo;
 }
