@@ -73,20 +73,18 @@ export async function deleteTodo(id) {
   return deletedTodo;
 }
 
-export async function updateTodo(id, { isComplete, name }) {
-  const todo = todos.find((todo) => {
-    return todo.id === id;
+export async function updateTodo(id, { title }) {
+  const response = await fetch("/api/todo", {
+    headers: {
+      "content-type": "application/json",
+    },
+
+    method: "POST",
+
+    body: JSON.stringify({ title, id }),
   });
 
-  if (isComplete !== undefined) {
-    todo.isComplete = isComplete;
-  }
+  const updatedTodo = await response.json();
 
-  if (name) {
-    todo.name = name;
-  }
-
-  saveTodos();
-
-  return todo;
+  return updatedTodo;
 }
